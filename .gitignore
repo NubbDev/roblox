@@ -1,0 +1,7 @@
+# Project place file
+/roblox.rbxlx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+/.history
