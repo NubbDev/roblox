@@ -2,10 +2,6 @@ local DataStoreService = game:GetService('DataStoreService')
 
 local myStore = DataStoreService:GetDataStore('myStore')
 
-
- 
-
-
 game.Players.PlayerAdded:Connect(function(player)
     local stats = Instance.new("Folder")
     stats.Name = "leaderstats"
@@ -15,7 +11,11 @@ game.Players.PlayerAdded:Connect(function(player)
     
     local currency = Instance.new("IntValue")
     currency.Name = "Racks"
-    
+
+    local totalViews = Instance.new("IntValue")
+    totalViews.Name = "TotalViews"
+
+    totalViews.Parent = stats
     views.Parent = stats
     currency.Parent = stats
     stats.Parent = player
