@@ -1,17 +1,12 @@
 local userInput = game:GetService('UserInputService')
-local ContextActionService = game:GetService("ContextActionService")
 local player = game.Players.LocalPlayer
+local defaults = require(game.ReplicatedStorage.Shared.PlayerDefaults)
 local state = require(player.PlayerScripts.Client.phone.state)
 local updateViews: RemoteEvent = game.ReplicatedStorage.Events.UpdateViews
 
 while not player.Backpack:FindFirstChild("Phone") do
     task.wait(0.001)
 end
-
-local stats: Folder = player:FindFirstChild("leaderstats")
-local views: IntValue = stats:FindFirstChild("Views")
-local totalViews: IntValue = stats:FindFirstChild("TotalViews")
-local racks: IntValue = stats:FindFirstChild("Racks")
 
 local phone: Tool = player.Backpack:WaitForChild("Phone")
 local streamGUI: ScreenGui = player.PlayerGui:WaitForChild("StartRecording")
@@ -24,6 +19,16 @@ local spaceBarFrame: Frame = spaceBarGui:FindFirstChild("GameFrame")
 local spaceBarBackground: Frame = spaceBarFrame:FindFirstChild("Background")
 local safeZone: Frame = spaceBarFrame:FindFirstChild("GreenBar")
 local spaceBar: Frame = spaceBarFrame:FindFirstChild("BlueBar")
+
+local function setPlayerMovement(walk: number, jump: number)
+    player.Character.Humanoid.WalkSpeed = walk
+    player.Character.Humanoid.JumpPower = jump
+end
+
+local function reset()
+    setPlayerMovement(defaults.walking.speed, defaults.walking.jump)
+    state:endGame()
+end
 
 state.safeZonePos = {
     min = spaceBarBackground.Position.X.Scale,
@@ -54,10 +59,11 @@ recordButton.MouseButton1Click:Connect(function()
     local timeDelay = 0.5
     task.delay(timeDelay, function()
         spaceBarGui.Enabled = true
+        setPlayerMovement(0, 0)
     end)
     task.wait(timeDelay)
-    task.delay(1000, function()
-        state:endGame()
+    task.delay(10, function()
+        reset()
         if state.phoneEquipped then
             streamGUI.Enabled = true
         end
@@ -74,7 +80,7 @@ end)
 phone.Unequipped:Connect(function()
     streamGUI.Enabled = false
     state.phoneEquipped = false
-    state:endGame()
+    reset()
 end)
 
 userInput.InputBegan:Connect(function(input)
